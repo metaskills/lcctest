@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: {{cookiecutter.class_name}}
+
+Parameters:
+
+  StageEnv:
+    Type: String
+    Default: development
+    AllowedValues:
+      - development
+      - staging
+      - prod
+
+Resources:
+
+  {{cookiecutter.class_name}}:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: lib/{{cookiecutter.file_name}}.handler
+      Runtime: ruby2.7
+      Timeout: 60
+      MemorySize: 512
+      FunctionName: !Sub {{cookiecutter.dash_name}}-${StageEnv}
+      Environment:
+        Variables:
+          STAGE_ENV: !Ref StageEnv
+
+Outputs:
+
+  {{cookiecutter.class_name}}LambdaArn:
+    Description: Lambda Function Arn
+    Value: !GetAtt {{cookiecutter.class_name}}.Arn
